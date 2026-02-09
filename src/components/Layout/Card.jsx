@@ -46,26 +46,33 @@ const data = [
 
 export default function StatsCards() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 shadow-gray-800">
-        {data.map((item, index) => {
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {data.map((item, index) => {
         const Icon = item.icon;
+        const positive = !item.change.includes("-");
+
         return (
-          <div key={index}
-            className="bg-gradient-to-r from-fuchsia-500 to-cyan-500 rounded-xl shadow-sm p-5 border border-gray-100">
-           
+          <div
+            key={index}
+            className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300"
+          >
             <div className="flex items-center justify-between">
-              <p className="text-sm text-black font-bold">{item.title}</p>
-              <div
-          className={`w-9 h-9 flex items-center justify-center rounded-lg bg-${item.color}-100`}>
-          <Icon className={`text-${item.color}-600`} size={18} />
+              <p className="text-sm text-gray-500 font-medium">{item.title}</p>
+              <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100">
+                <Icon className="text-gray-700" size={18} />
               </div>
             </div>
 
             <h2 className="text-2xl font-bold mt-3">{item.value}</h2>
-            <p className="text-sm mt-1 text-green-800 " >
-            {item.change} <span className="text-amber-50 text-sm ">{item.subtitle}</span>
-            </p>
 
+            <p
+              className={`text-sm mt-1 ${
+                positive ? "text-green-600" : "text-red-500"
+              }`}
+            >
+              {item.change}{" "}
+              <span className="text-gray-400">{item.subtitle}</span>
+            </p>
           </div>
         );
       })}
