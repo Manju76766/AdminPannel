@@ -1,25 +1,27 @@
 import { useState } from "react";
-import { FiEdit2, FiShield, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
+import { FiEdit2, FiEye, FiEyeOff, FiShield, FiLock } from "react-icons/fi";
 
 export default function Setting() {
   const [activeTab, setActiveTab] = useState("profile");
+  const [showPassword, setShowPassword] = useState(false);
   const [saved, setSaved] = useState(false);
 
   const handleSave = () => {
     setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setTimeout(() => setSaved(false), 2000);
   };
 
   return (
-    <div className="w-full">
-      <div className="bg-gray-100 rounded-xl p-6">
-        <div className="bg-white rounded-xl p-8 shadow-sm">
+    <div className="">
+      <div className="max-w-6xl mx-auto">
+        {/* Main Card */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200">
 
-          {/* ================= TABS ================= */}
-          <div className="flex gap-8 border-b pb-3 text-sm font-medium">
+          {/* Tabs */}
+          <div className="flex gap-10 px-8 pt-6 border-b text-base font-medium">
             <button
               onClick={() => setActiveTab("profile")}
-              className={`pb-2 ${
+              className={`pb-3 ${
                 activeTab === "profile"
                   ? "border-b-2 border-black text-black"
                   : "text-gray-400"
@@ -30,7 +32,7 @@ export default function Setting() {
 
             <button
               onClick={() => setActiveTab("security")}
-              className={`pb-2 ${
+              className={`pb-3 ${
                 activeTab === "security"
                   ? "border-b-2 border-black text-black"
                   : "text-gray-400"
@@ -40,110 +42,142 @@ export default function Setting() {
             </button>
           </div>
 
-          {/* ================= PROFILE TAB ================= */}
+          {/* ================= PROFILE ================= */}
           {activeTab === "profile" && (
-            <div className="mt-8 grid grid-cols-1 lg:grid-cols-4 gap-8">
-              {/* Profile Image */}
-              <div className="flex justify-center lg:justify-start">
-                <div className="relative w-24 h-24">
-                  <img
-                    src="https://i.pravatar.cc/120?img=12"
-                    alt="profile"
-                    className="w-24 h-24 rounded-full object-cover"
-                  />
-                  <button className="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 bg-gray-800 w-8 h-8 rounded-full flex items-center justify-center shadow-sm hover:bg-gray-700 transition">
-                    <FiEdit2 size={14} className="text-white" />
-                  </button>
-                </div>
-              </div>
+            <div className="px-8 py-10">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
 
-              {/* Form */}
-              <div className="lg:col-span-3">
-                <form className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-                  <Input label="Your Name" value="Manju" />
-                  <Input label="User Name" value="Naik" />
-                  <Input label="Email" value="naikmanju716@gmail.com" />
-                  <Input label="Password" value="********" type="password" />
-                  <Input label="City" value="Bharamasagara" />
-                  <Input label="Country" value="India" />
-                </form>
+                {/* Profile Image */}
+                <div className="flex justify-center lg:justify-start">
+                  <div className="relative w-45 h-45 ml-3">
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 p-[4px]">
+                      <img
+                        src="https://i.pravatar.cc/400?img=12"
+                        alt="profile"
+                        className="w-full h-full rounded-full object-cover bg-white"
+                      />
+                    </div>
 
-                <div className="flex justify-end mt-10">
-                  <button
-                    type="button"
-                    onClick={handleSave}
-                    className="px-10 py-2.5 rounded-lg border bg-white hover:bg-gray-100 text-gray-700 transition"
-                  >
-                    Save
-                  </button>
-                </div>
-
-                {saved && (
-                  <div className="flex justify-end mt-3">
-                    <span className="text-sm text-green-600">
-                      ✔ Profile updated successfully
-                    </span>
+                    <button className="absolute bottom-4 right-4 bg-black w-12 h-12 rounded-full flex items-center justify-center">
+                      <FiEdit2 size={18} className="text-white" />
+                    </button>
                   </div>
-                )}
+                </div>
+
+                {/* Form Section */}
+                <div className="lg:col-span-2">
+                  <form className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+
+                    <Input label="Your Name" value="Manju" />
+                    <Input label="User Name" value="Naik" />
+
+                    <Input label="Email" value="naikmanju716@gmail.com" />
+
+                    {/* Password */}
+                    <div className="flex flex-col gap-2 relative">
+                      <label className="text-sm text-gray-600">
+                        Password
+                      </label>
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        defaultValue="DontTell"
+                        className="border border-gray-300 rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-10 text-gray-500"
+                      >
+                        {showPassword ? <FiEyeOff /> : <FiEye />}
+                      </button>
+                    </div>
+
+                    <Input label="City" value="Bharamasagara" />
+                    <Input label="Country" value="India" />
+                  </form>
+
+                  {/* Save Button */}
+                  <div className="flex justify-end mt-10">
+                    <button
+                      type="button"
+                      onClick={handleSave}
+                      className="px-10 py-3 bg-black text-white rounded-xl text-sm hover:opacity-90 transition"
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+
+                  {saved && (
+                    <p className="text-green-600 text-sm mt-4 text-right">
+                      ✔ Profile updated successfully
+                    </p>
+                  )}
+                </div>
+
               </div>
             </div>
           )}
 
-          {/* ================= SECURITY TAB ================= */}
-          {activeTab === "security" && (
-            <div className="mt-8 space-y-6">
+         {/* ================= SECURITY ================= */}
+{activeTab === "security" && (
+  <div className="px-4 sm:px-6 md:px-8 py-6 sm:py-8 space-y-6">
 
-              <div className="border rounded-lg p-6 flex justify-between items-center">
-                <div>
-                  <h3 className="font-medium flex items-center gap-2">
-                    <FiLock /> Change Password
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    Update your account password regularly.
-                  </p>
-                </div>
-                <button className="px-6 py-2 bg-black text-white rounded-lg hover:opacity-90">
-                  Update
-                </button>
-              </div>
+    {/* Change Password */}
+    <div className="border rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+      <div className="space-y-2">
+        <h3 className="font-semibold text-lg flex items-center gap-2">
+          <FiLock /> Change Password
+        </h3>
+        <p className="text-sm text-gray-500">
+          Update your admin password regularly.
+        </p>
+      </div>
 
-              <div className="border rounded-lg p-6 flex justify-between items-center">
-                <div>
-                  <h3 className="font-medium flex items-center gap-2">
-                    <FiShield /> Two-Factor Authentication
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    Add extra security to your admin account.
-                  </p>
-                </div>
-                <button className="px-6 py-2 border rounded-lg hover:bg-gray-100">
-                  Enable
-                </button>
-              </div>
+      <button className="w-full sm:w-auto px-8 py-3 bg-black text-white rounded-xl text-sm hover:opacity-90 transition">
+        Update
+      </button>
+    </div>
 
-              <div className="border rounded-lg p-6">
-                <h3 className="font-medium mb-3">Recent Login Activity</h3>
-                <ul className="text-sm text-gray-600 space-y-2">
-                  <li>🟢 Logged in from Chrome – India (Today)</li>
-                  <li>🟢 Logged in from Mobile – 2 days ago</li>
-                  <li>🔴 Failed login attempt – 5 days ago</li>
-                </ul>
-              </div>
+    {/* Two Factor */}
+    <div className="border rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+      <div className="space-y-2">
+        <h3 className="font-semibold text-lg flex items-center gap-2">
+          <FiShield /> Two-Factor Authentication
+        </h3>
+        <p className="text-sm text-gray-500">
+          Add extra security to your account.
+        </p>
+      </div>
 
-              <div className="border rounded-lg p-6 flex justify-between items-center">
-                <div>
-                  <h3 className="font-medium">Logout All Devices</h3>
-                  <p className="text-sm text-gray-500">
-                    Sign out from all active sessions.
-                  </p>
-                </div>
-                <button className="px-6 py-2 text-red-600 border border-red-500 rounded-lg hover:bg-red-50">
-                  Logout All
-                </button>
-              </div>
+      <button className="w-full sm:w-auto px-8 py-3 border border-gray-300 rounded-xl text-sm hover:bg-gray-100 transition">
+        Enable
+      </button>
+    </div>
 
-            </div>
-          )}
+    {/* Login Activity */}
+    <div className="border rounded-2xl p-6">
+      <h3 className="font-semibold text-lg mb-4">
+        Recent Login Activity
+      </h3>
+
+      <ul className="space-y-4 text-sm text-gray-600">
+        <li className="flex items-center gap-3">
+          <span className="w-3 h-3 rounded-full bg-green-500"></span>
+          Chrome – India (Today)
+        </li>
+        <li className="flex items-center gap-3">
+          <span className="w-3 h-3 rounded-full bg-green-500"></span>
+          Mobile – 2 days ago
+        </li>
+        <li className="flex items-center gap-3">
+          <span className="w-3 h-3 rounded-full bg-red-500"></span>
+          Failed attempt – 5 days ago
+        </li>
+      </ul>
+    </div>
+
+  </div>
+)}
 
         </div>
       </div>
@@ -151,32 +185,39 @@ export default function Setting() {
   );
 }
 
-/* ================= UPDATED INPUT WITH EYE ================= */
-function Input({ label, value, type = "text" }) {
-  const [showPassword, setShowPassword] = useState(false);
-  const isPassword = type === "password";
-
+/* Reusable Input */
+function Input({ label, value }) {
   return (
-    <div className="flex flex-col gap-1 relative">
-      <label className="text-sm text-gray-500">{label}</label>
-
+    <div className="flex flex-col gap-2">
+      <label className="text-sm text-gray-600">{label}</label>
       <input
-        type={isPassword && showPassword ? "text" : type}
         defaultValue={value}
-        className={`border border-gray-300 rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-gray-400 ${
-          isPassword ? "pr-10" : ""
-        }`}
+        className="border border-gray-300 rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
       />
+    </div>
+  );
+}
 
-      {isPassword && (
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-3 top-[34px] text-gray-500 hover:text-gray-700"
-        >
-          {showPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
-        </button>
-      )}
+/* Security Card */
+function SecurityCard({ icon, title, desc, button, primary }) {
+  return (
+    <div className="border rounded-xl p-6 flex justify-between items-center">
+      <div>
+        <h3 className="font-semibold flex items-center gap-2 text-lg">
+          {icon} {title}
+        </h3>
+        <p className="text-sm text-gray-500 mt-1">{desc}</p>
+      </div>
+
+      <button
+        className={`px-8 py-2.5 rounded-xl text-sm ${
+          primary
+            ? "bg-black text-white hover:opacity-90"
+            : "border border-gray-300 hover:bg-gray-100"
+        }`}
+      >
+        {button}
+      </button>
     </div>
   );
 }

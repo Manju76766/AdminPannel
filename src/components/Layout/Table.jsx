@@ -1,170 +1,197 @@
-import { Eye, SlidersHorizontal } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const orders = [
-  {
-    id: "#87961",
-    name: "Mark Allen",
-    date: "May 25, 2023",
-    time: "10:30 AM",
-    amount: "₹120",
-    payment: "Online",
-  },
-  {
-    id: "#87961",
-    name: "Jasso",
-    date: "May 25, 2023",
-    time: "10:30 AM",
-    amount: "₹120",
-    payment: "Online",
-  },
-  {
-    id: "#87961",
-    name: "Ram",
-    date: "May 26, 2023",
-    time: "10:30 AM",
-    amount: "₹120",
-    payment: "Online",
-  },
-  {
-    id: "#87961",
-    name: "Bob",
-    date: "May 22, 2023",
-    time: "10:30 AM",
-    amount: "₹120",
-    payment: "COD",
-  },
-];
+import {
+  MoreVertical,
+  ChevronLeft,
+  ChevronRight,
+  Upload,
+  Pencil,
+  Trash2,
+  X,
+} from "lucide-react";
+
+// ✅ Import your uploaded images
+import Cust1 from "../../assets/Img/Cust1.avif";
+import Cust2 from "../../assets/Img/Cust2.webp";
+import Cust3 from "../../assets/Img/Cust3.webp";
+import Cust4 from "../../assets/Img/Cust4.avif";
+import Cust5 from "../../assets/Img/Cust5.avif";
+import Cust6 from "../../assets/Img/Cust6.avif";
+import Cust7 from "../../assets/Img/Cust7.avif";
+import Cust8 from "../../assets/Img/Cust8.avif";
+import Cust9 from "../../assets/Img/Cust9.avif";
+
 
 export default function OrdersTable() {
-  const [filterOpen, setFilterOpen] = useState(false);
-  const filterRef = useRef(null);
+  const [selected, setSelected] = useState([]);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    function handleClickOutside(e) {
-      if (filterRef.current && !filterRef.current.contains(e.target)) {
-        setFilterOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+
+  const orders = [
+    { id: "#ER84781", date: "1 Oct 2024", name: "Kristin Watson", items: "2 Items", total: "$839", payment: "Success", avatar: Cust1 },
+    { id: "#ER84782", date: "2 Oct 2024", name: "Leslie Alexander", items: "4 Items", total: "$374", payment: "Pending", avatar: Cust2 },
+    { id: "#ER84783", date: "3 Oct 2024", name: "Guy Hawkins", items: "5 Items", total: "$485", payment: "Success", avatar: Cust3 },
+    { id: "#ER84784", date: "4 Oct 2024", name: "Robert Fox", items: "8 Items", total: "$824", payment: "Success", avatar: Cust4 },
+    { id: "#ER84785", date: "5 Oct 2024", name: "Cody Fisher", items: "2 Items", total: "$285", payment: "Pending", avatar: Cust5 },
+    { id: "#ER84786", date: "6 Oct 2024", name: "Bessie Cooper", items: "1 Items", total: "$537", payment: "Success", avatar: Cust6 },
+    { id: "#ER84787", date: "7 Oct 2024", name: "Albert Flores", items: "5 Items", total: "$426", payment: "Pending", avatar: Cust7 },
+    { id: "#ER84788", date: "8 Oct 2024", name: "Ralph Edwards", items: "1 Items", total: "$386", payment: "Pending", avatar: Cust8 },
+    { id: "#ER84789", date: "9 Oct 2024", name: "Arlene McCoy", items: "3 Items", total: "$657", payment: "Success", avatar: Cust9 },
+  ];
+
+  const toggleSelect = (id) => {
+    setSelected((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const paymentStyle = (status) =>
+    status === "Success"
+      ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
+      : "bg-amber-50 text-amber-600 border border-amber-200";
 
   return (
-    <section className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-100 w-full">
-      {/* ================= Header ================= */}
-      <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900 tracking-tight">
-            New Orders
-          </h2>
-          <p className="text-xs text-gray-400 mt-0.5">
-            Latest customer transactions
-          </p>
-        </div>
+    <div className="">
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
 
-        {/* Filter */}
-        <div ref={filterRef} className="relative">
-          <button
-            onClick={() => setFilterOpen(!filterOpen)}
-            className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition"
-          >
-            <SlidersHorizontal size={16} />
-            Filter
-          </button>
-
-          {filterOpen && (
-            <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-xl border border-gray-100 z-50">
-              {["All Orders", "Online Payments", "Cash on Delivery"].map(
-                (item) => (
-                  <div
-                    key={item}
-                    onClick={() => setFilterOpen(false)}
-                    className="px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 cursor-pointer transition"
-                  >
-                    {item}
-                  </div>
-                )
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* ================= Table ================= */}
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[900px] text-sm">
-          <thead>
-            <tr className="text-[11px] uppercase tracking-wide text-gray-400 border-b border-gray-100">
-              <th className="px-6 py-3 font-medium text-left">Order</th>
-              <th className="px-6 py-3 font-medium text-left">Customer</th>
-              <th className="px-6 py-3 font-medium text-left">Date</th>
-              <th className="px-6 py-3 font-medium text-left">Time</th>
-              <th className="px-6 py-3 font-medium text-left">Amount</th>
-              <th className="px-6 py-3 font-medium text-left">Payment</th>
-              <th className="px-6 py-3 font-medium text-left">Status</th>
-              <th className="px-6 py-3 font-medium text-center">Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {orders.map((item, index) => (
-              <tr
-                key={index}
-                className="group border-b border-gray-50 hover:bg-gray-50/70 transition-colors"
-              >
-                <td className="px-6 py-5 font-medium text-gray-900">
-                  {item.id}
-                </td>
-                <td className="px-6 py-5 text-gray-600">
-                  {item.name}
-                </td>
-                <td className="px-6 py-5 text-gray-500">
-                  {item.date}
-                </td>
-                <td className="px-6 py-5 text-gray-500">
-                  {item.time}
-                </td>
-                <td className="px-6 py-5 font-semibold text-gray-900">
-                  {item.amount}
-                </td>
-                <td className="px-6 py-5">
-                  <span className="inline-flex items-center px-2.5 py-1 text-xs rounded-full bg-gray-100 text-gray-700">
-                    {item.payment}
-                  </span>
-                </td>
-
-                {/* Status */}
-                <td className="px-6 py-5">
-                  <div className="flex gap-2">
-                    <button className="px-3 py-1 text-xs rounded-full bg-red-50 text-red-600 hover:bg-red-100 transition">
-                      Reject
-                    </button>
-                    <button className="px-3 py-1 text-xs rounded-full bg-green-50 text-green-600 hover:bg-green-100 transition">
-                      Accept
-                    </button>
-                  </div>
-                </td>
-
-                {/* Action */}
-                <td className="px-6 py-5 text-center">
-                  <Eye
-                    size={16}
-                    className="inline-block text-gray-400 opacity-0 group-hover:opacity-100 cursor-pointer transition"
-                  />
-                </td>
+        {/* Table */}
+        <div className="overflow-x-auto">
+          <table className="min-w-[1100px] w-full text-sm">
+            <thead className="bg-gray-50 text-gray-500 uppercase text-xs tracking-wider">
+              <tr>
+                <th className="px-6 py-4 text-left"></th>
+                <th className="px-6 py-4 text-left font-semibold">Orders</th>
+                <th className="px-6 py-4 text-left font-semibold">Date</th>
+                <th className="px-6 py-4 text-left font-semibold">Customer</th>
+                <th className="px-6 py-4 text-left font-semibold">Delivery</th>
+                <th className="px-6 py-4 text-left font-semibold">Items</th>
+                <th className="px-6 py-4 text-left font-semibold">Total</th>
+                <th className="px-6 py-4 text-left font-semibold">Payment</th>
+                <th className="px-6 py-4 text-center font-semibold">Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
 
-      {/* ================= Footer ================= */}
-      <div className="flex justify-center py-5">
-        <button className="text-sm font-medium text-white px-6 py-2 rounded-xl bg-[#925EFF] hover:bg-[#925EFF]/90 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
-          View all orders
-        </button>
+            <tbody className="divide-y divide-gray-100">
+              {orders.map((order, i) => {
+                const isSelected = selected.includes(order.id);
+
+                return (
+                  <tr
+                    key={i}
+                    className={`transition ${
+                      isSelected ? "bg-purple-50" : "hover:bg-gray-50"
+                    }`}
+                  >
+                    <td className="px-6 py-4">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => toggleSelect(order.id)}
+                        className="accent-purple-600 w-4 h-4"
+                      />
+                    </td>
+
+                    <td className="px-6 py-4 font-semibold text-gray-800">
+                      {order.id}
+                    </td>
+
+                    <td className="px-6 py-4 text-gray-500">
+                      {order.date}
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={order.avatar}
+                          alt={order.name}
+                          className="w-9 h-9 rounded-full object-cover"
+                        />
+                        <span className="text-gray-800 font-medium">
+                          {order.name}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* ✅ Delivery Logic Updated */}
+                    <td className="px-6 py-4 text-gray-600">
+                      {order.payment === "Pending"
+                        ? "Shipped"
+                        : "Delivered"}
+                    </td>
+
+                    <td className="px-6 py-4 text-gray-600 font-medium">
+                      {order.items}
+                    </td>
+
+                    <td className="px-6 py-4 font-semibold text-gray-900">
+                      {order.total}
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <span
+                        className={`px-3 py-1 text-xs rounded-full font-medium ${paymentStyle(
+                          order.payment
+                        )}`}
+                      >
+                        {order.payment}
+                      </span>
+                    </td>
+
+                    <td className="px-6 py-4 text-center">
+                      <button className="p-2 rounded-lg hover:bg-gray-100 transition">
+                        <MoreVertical size={16} className="text-gray-500" />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {selected.length > 0 && (
+  <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-white shadow-xl border border-gray-200 rounded-2xl px-8 py-4 flex items-center gap-6 text-sm">
+
+    <span className="font-medium text-gray-700">
+      {selected.length} Selected
+    </span>
+
+    <button className="flex items-center gap-2 text-gray-600 hover:text-purple-600 transition">
+      <Pencil size={14} /> Edit Info
+    </button>
+
+    <button className="flex items-center gap-2 text-gray-600 hover:text-red-600 transition">
+      <Trash2 size={14} /> Delete
+    </button>
+
+    <button onClick={() => setSelected([])}>
+      <X size={16} className="text-gray-500 hover:text-gray-800" />
+    </button>
+
+  </div>
+)}
+
+ {/* Bottom View All Button */}
+<div className="flex justify-center mt-8 pb-8">
+  <button
+    onClick={() => navigate("/orders")}
+    className="group relative px-10 py-3 rounded-2xl 
+               bg-gradient-to-r from-purple-600 to-indigo-500 
+               text-white font-semibold tracking-wide
+               shadow-lg hover:shadow-2xl
+               transition-all duration-300 ease-in-out
+               hover:-translate-y-1 hover:scale-105"
+  >
+    <span className="relative z-10">View All Orders</span>
+
+    {/* Soft Glow Effect */}
+    <span className="absolute inset-0 rounded-2xl bg-white/10 opacity-0 group-hover:opacity-100 transition duration-300"></span>
+  </button>
+</div>
+
+
       </div>
-    </section>
+    </div>
   );
-}
+} 

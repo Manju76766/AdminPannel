@@ -4,10 +4,11 @@ import {
   Users,
   ShoppingCart,
   CreditCard,
-  FileText,
   Settings,
   LogOut,
   ArrowLeftFromLine,
+  Package,
+  PlusCircle,
 } from "lucide-react";
 
 export default function Sidebar({
@@ -22,14 +23,14 @@ export default function Sidebar({
     setActiveItem(activePage);
   }, [activePage]);
 
-  // 👇 label = UI text | page = logic key
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", page: "Dashboard" },
     { icon: Users, label: "Users", page: "Users" },
-    { icon: ShoppingCart, label: "Items", page: "Items" },
+    { icon: ShoppingCart, label: "Products", page: "Items" },
+    { icon: Package, label: "Orders", page: "Orders" },
+{ icon: PlusCircle, label: "Add Product", page: "AddProduct" },
     { icon: CreditCard, label: "Transactions", page: "Transactions" },
-    { icon: FileText, label: "Reservation", page: "Reservation" },
-    { icon: Settings, label: "Settings", page: "Setting" }, // ✅ FIX
+    { icon: Settings, label: "Settings", page: "Setting" },
   ];
 
   return (
@@ -37,7 +38,7 @@ export default function Sidebar({
       {/* MOBILE BACKDROP */}
       <div
         onClick={() => setOpen(false)}
-        className={`fixed inset-0 bg-black/40 z-40 md:hidden ${
+        className={`fixed inset-0 bg-black/40 z-40 md:hidden transition-opacity ${
           open ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       />
@@ -88,9 +89,9 @@ function SidebarContent({
   menuItems,
 }) {
   return (
-    <>
+    <div className="flex flex-col h-full">
       {/* LOGO */}
-      <div className="flex items-center justify-between px-4 py-5">
+      <div className="flex items-center justify-between px-4 py-5 shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-[#925EFF] flex items-center justify-center text-white font-bold">
             MA
@@ -109,7 +110,7 @@ function SidebarContent({
       </div>
 
       {/* MENU */}
-      <nav className="flex-1 px-3 space-y-1">
+      <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
         {menuItems.map((item) => (
           <div
             key={item.label}
@@ -131,12 +132,12 @@ function SidebarContent({
       </nav>
 
       {/* LOGOUT */}
-      <div className="p-4 border-t">
+      <div className="p-4 border-t shrink-0">
         <div className="flex items-center gap-3 text-red-500 cursor-pointer">
           <LogOut size={18} />
           {open && <span>Logout</span>}
         </div>
       </div>
-    </>
+    </div>
   );
 }

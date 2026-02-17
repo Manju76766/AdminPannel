@@ -9,6 +9,11 @@ import Card from "./components/Layout/Card";
 import Table from "./components/Layout/Table";
 import OrdersPage from "./components/Pages/OrdersPage";
 import Setting from "./components/Pages/Setting";
+import Items from "./components/Pages/Items";
+import AllOrdersPage from "./components/Pages/AllOrdersPage";
+
+import AddProduct from "./components/Pages/AddProduct";
+
 
 export default function App() {
   const [open, setOpen] = useState(true);
@@ -16,7 +21,6 @@ export default function App() {
 
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
-      {/* ================= SIDEBAR ================= */}
       <Sidebar
         open={open}
         setOpen={setOpen}
@@ -24,14 +28,11 @@ export default function App() {
         setActivePage={setActivePage}
       />
 
-      {/* ================= MAIN CONTENT ================= */}
       <div className="flex flex-col flex-1 min-w-0">
-        {/* HEADER */}
         <Header open={open} setOpen={setOpen} />
 
-        {/* PAGE CONTENT */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-          {/* DASHBOARD */}
+        <main className="flex-1 overflow-y-auto p-6 lg:p-8">
+
           {activePage === "Dashboard" && (
             <>
               <Card />
@@ -41,11 +42,16 @@ export default function App() {
             </>
           )}
 
-          {/* USERS / ORDERS PAGE */}
           {activePage === "Users" && <OrdersPage />}
 
-          {/* SETTING PAGE */}
+          {activePage === "Orders" && <AllOrdersPage />}
+
           {activePage === "Setting" && <Setting />}
+
+          {activePage === "Items" && <Items />}
+
+          {activePage === "AddProduct" && <AddProduct />}
+
         </main>
       </div>
     </div>

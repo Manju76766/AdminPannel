@@ -1,341 +1,285 @@
-import { useState, useRef, useEffect } from "react";
-import {
-  FiMoreVertical,
-  FiCalendar,
-  FiEye,
-  FiEdit,
-  FiDownload,
-  FiX,
-} from "react-icons/fi";
+import { useState, useMemo } from "react";
+import { MoreVertical } from "lucide-react";
 
-const ordersData = [
-  {
-    id: 78654,
-    name: "Zayan",
-    address: "1901 Thornridge Cir. Shiloh, Hawaii 81063",
-    date: "2023-05-15",
-    price: "₹120",
-    status: "Complete",
-    avatar: "https://i.pravatar.cc/40?img=1",
-  },
-  {
-    id: 89769,
-    name: "Robiul islam",
-    address: "8502 Preston Rd. Inglewood, Maine 98380",
-    date: "2023-05-17",
-    price: "₹200",
-    status: "Complete",
-    avatar: "https://i.pravatar.cc/40?img=2",
-  },
-  {
-    id: 84653,
-    name: "Sarfraz",
-    address: "2464 Royal Ln. Mesa, New Jersey 45463",
-    date: "2023-05-25",
-    price: "₹650",
-    status: "Pending",
-    avatar: "https://i.pravatar.cc/40?img=4",
-  },
-  {
-    id: 47654,
-    name: "Huzaifa",
-    address: "8502 Preston Rd. Inglewood, Maine 98380",
-    date: "2023-05-29",
-    price: "₹456",
-    status: "Complete",
-    avatar: "https://i.pravatar.cc/40?img=5",
-  },
+// Images
+import Cust1 from "../../assets/Img/Cust1.avif";
+import Cust2 from "../../assets/Img/Cust2.webp";
+import Cust3 from "../../assets/Img/Cust3.webp";
+import Cust4 from "../../assets/Img/Cust4.avif";
+import Cust5 from "../../assets/Img/Cust5.avif";
+import Cust6 from "../../assets/Img/Cust6.avif";
+import Cust7 from "../../assets/Img/Cust7.avif";
+import Cust8 from "../../assets/Img/Cust8.avif";
+import Cust9 from "../../assets/Img/Cust9.avif";
+import Cust10 from "../../assets/Img/Cust10.avif";
 
-  // ➕ EXTRA ROW ADDED
-  {
-    id: 99871,
-    name: "Ayaan Khan",
-    address: "742 Evergreen Terrace, Springfield",
-    date: "2023-06-02",
-    price: "₹520",
-    status: "Pending",
-    avatar: "https://i.pravatar.cc/40?img=8",
-  },
-  {
-  id: 55421,
-  name: "Imran Khan",
-  address: "77 Sunset Blvd, Los Angeles, California 90028",
-  date: "2023-06-10",
-  price: "₹390",
-  status: "Pending",
-  avatar: "https://i.pravatar.cc/40?img=14",
-},
-{
-  id: 66987,
-  name: "Adnan Malik",
-  address: "44 King Street, Manchester M2 5EA",
-  date: "2023-06-12",
-  price: "₹580",
-  status: "Complete",
-  avatar: "https://i.pravatar.cc/40?img=15",
-},
-
-];
-
-const statusStyle = {
-  Complete: "bg-green-100 text-green-600",
-  Pending: "bg-yellow-100 text-yellow-600",
-  Cancel: "bg-red-100 text-red-600",
-};
 
 export default function OrdersPage() {
-  const [filter, setFilter] = useState("All");
-  const [selectedDate, setSelectedDate] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [openMenu, setOpenMenu] = useState(null);
 
-  // ➕ PAGINATION STATE
-  const [currentPage, setCurrentPage] = useState(1);
-  const perPage = 6;
+  const ordersPerPage = 7;
 
-  const menuRef = useRef(null);
+  const [orders, setOrders] = useState([
+    { id: 78654, name: "Zayan", img: Cust1, address: "1901 Thornridge Cir. Shiloh, Hawaii 81063", date: "15-05-2023", price: "₹300", status: "Complete" },
+    { id: 89769, name: "Robiul islam", img: Cust2, address: "8502 Preston Rd. Inglewood, Maine 98380", date: "17-05-2023", price: "₹495", status: "Complete" },
+    { id: 65437, name: "Sadek hossin", img: Cust3, address: "6391 Elgin St. Celina, Delaware 10299", date: "22-05-2023", price: "₹355", status: "Complete" },
+    { id: 84653, name: "Sarfaraz", img: Cust4, address: "2464 Royal Ln. Mesa, New Jersey 45463", date: "25-05-2023", price: "₹350", status: "Pending" },
+    { id: 47654, name: "Huzaifa", img: Cust5, address: "8502 Preston Rd. Inglewood, Maine 98380", date: "29-05-2023", price: "₹456", status: "Complete" },
+    { id: 67854, name: "Mehwish", img: Cust6, address: "8502 Preston Rd. Inglewood, Maine 98380", date: "07-06-2023", price: "₹460", status: "Complete" },
+    { id: 89657, name: "Zainab Fatima", img: Cust7, address: "6391 Elgin St. Celina, Delaware 10299", date: "12-06-2023", price: "₹340", status: "Cancel" },
+    { id: 99876, name: "Ayesha Khan", img: Cust8, address: "742 Evergreen Terrace, Springfield 62704", date: "28-06-2023", price: "₹390", status: "Pending" },
+    { id: 12345, name: "Hanzalah", img: Cust9, address: "New Street 45, Chicago", date: "30-06-2023", price: "₹300", status: "Complete" },
+    { id: 56789, name: "Rizwan", img: Cust10, address: "Main Street 12, Texas", date: "01-07-2023", price: "₹410", status: "Pending" },
+  ]);
 
-  useEffect(() => {
-    const close = (e) =>
-      menuRef.current &&
-      !menuRef.current.contains(e.target) &&
-      setOpenMenu(null);
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
 
-    document.addEventListener("mousedown", close);
-    return () => document.removeEventListener("mousedown", close);
-  }, []);
+  const paginatedOrders = useMemo(() => {
+    return orders.slice(
+      (currentPage - 1) * ordersPerPage,
+      currentPage * ordersPerPage
+    );
+  }, [currentPage, orders]);
 
-  const filteredOrders = ordersData.filter((o) => {
-    const statusMatch = filter === "All" || o.status === filter;
-    const dateMatch = !selectedDate || o.date === selectedDate;
-    return statusMatch && dateMatch;
-  });
+  const statusStyle = (status) => {
+    switch (status) {
+      case "Complete":
+        return "bg-green-100 text-green-600";
+      case "Pending":
+        return "bg-yellow-100 text-yellow-600";
+      case "Cancel":
+        return "bg-red-100 text-red-500";
+      default:
+        return "";
+    }
+  };
 
-  // ➕ PAGINATED DATA
-  const start = (currentPage - 1) * perPage;
-  const paginatedOrders = filteredOrders.slice(start, start + perPage);
-
-  const totalPages = Math.ceil(filteredOrders.length / perPage);
+  const updateStatus = (id, newStatus) => {
+    setOrders((prev) =>
+      prev.map((order) =>
+        order.id === id ? { ...order, status: newStatus } : order
+      )
+    );
+    setOpenMenu(null);
+  };
 
   return (
-    <section className="bg-white rounded-xl shadow-sm p-6">
-      {/* HEADER */}
-      <div className="flex justify-between mb-6">
-        <div className="flex gap-6 text-sm font-medium">
-          {["All", "Pending", "Complete"].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => {
-                setFilter(tab);
-                setCurrentPage(1);
-              }}
-              className={`pb-1 ${
-                filter === tab
-                  ? "border-b-2 border-black"
-                  : "text-gray-400"
-              }`}
+    <div className="w-full h-full">
+      <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 flex flex-col gap-6">
+
+        {/* ================= MOBILE VIEW (MATCH REFERENCE) ================= */}
+        <div className="md:hidden space-y-5">
+          {paginatedOrders.map((order) => (
+            <div
+              key={order.id}
+              className="bg-white rounded-2xl shadow-md p-5 relative"
             >
-              {tab === "All" ? "All Orders" : tab}
-            </button>
-          ))}
-        </div>
+              <div className="flex justify-between items-start">
+                <div className="flex items-center gap-4">
+                  <img
+                    src={order.img}
+                    alt={order.name}
+                    className="w-14 h-14 rounded-full object-cover"
+                  />
+                  <div>
+                    <p className="text-lg font-semibold leading-tight">
+                      {order.name}
+                    </p>
+                    <p className="text-sm text-gray-400">#{order.id}</p>
+                  </div>
+                </div>
 
-        {/* FIXED DATE INPUT */}
-        <div className="hidden sm:flex items-center gap-2 border rounded-lg px-3 py-2 text-sm text-gray-600">
+                <div className="relative">
+                  <button
+                    onClick={() =>
+                      setOpenMenu(openMenu === order.id ? null : order.id)
+                    }
+                  >
+                    <MoreVertical size={20} />
+                  </button>
 
-          <FiCalendar />
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => {
-              setSelectedDate(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="outline-none bg-transparent"
-          />
-          {selectedDate && (
-            <button onClick={() => setSelectedDate("")}>
-              <FiX />
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* ================= MOBILE CARDS ================= */}
-<div className="space-y-4 md:hidden">
-  {paginatedOrders.map((o) => (
-    <div
-      key={o.id}
-      className="bg-white border rounded-xl p-4 shadow-sm flex flex-col gap-3"
-    >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <img src={o.avatar} className="w-10 h-10 rounded-full" />
-          <div>
-            <p className="font-medium">{o.name}</p>
-            <p className="text-xs text-gray-500">ID: {o.id}</p>
-          </div>
-        </div>
-
-        <button
-          onClick={() => setOpenMenu(o.id)}
-          className="p-2 border rounded-lg"
-        >
-          <FiMoreVertical />
-        </button>
-      </div>
-
-      <p className="text-sm text-gray-600">{o.address}</p>
-
-      <div className="flex justify-between text-sm">
-        <span>{o.date.split("-").reverse().join("-")}</span>
-        <span className="font-medium">{o.price}</span>
-      </div>
-
-      <div className="flex justify-between items-center">
-        <span
-          className={`px-3 py-1 rounded-full text-xs ${statusStyle[o.status]}`}
-        >
-          {o.status}
-        </span>
-
-        {openMenu === o.id && (
-          <div
-            ref={menuRef}
-            className="absolute right-4 bottom-full mb-2 w-44 bg-white border rounded-lg shadow-lg z-20"
-          >
-            <ActionItem icon={<FiEye />} text="View details" />
-            <ActionItem icon={<FiEdit />} text="Edit order" />
-            <ActionItem icon={<FiDownload />} text="Download invoice" />
-            <ActionItem icon={<FiX />} text="Cancel order" danger />
-          </div>
-        )}
-      </div>
-    </div>
-  ))}
-</div>
-
-{/* ================= DESKTOP TABLE ================= */}
-<div className="hidden md:block overflow-x-auto">
-  <table className="w-full min-w-[900px] table-fixed border-separate border-spacing-y-3 text-sm">
-    <thead>
-      <tr className="bg-gray-100 text-gray-500">
-        <th className="px-3 py-3 w-[90px]">Id</th>
-        <th className="px-3 py-3 w-[180px]">Name</th>
-        <th className="px-3 py-3">Address</th>
-        <th className="px-3 py-3 w-[130px]">Date</th>
-        <th className="px-3 py-3 w-[120px]">Price</th>
-        <th className="px-3 py-3 w-[120px]">Status</th>
-        <th className="px-3 py-3 w-[90px] text-center">Action</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      {paginatedOrders.map((o) => (
-        <tr key={o.id} className="bg-white shadow rounded-lg">
-          <td className="px-3 py-4 font-medium">{o.id}</td>
-
-          <td className="px-3 py-4">
-            <div className="flex items-center gap-2">
-              <img src={o.avatar} className="w-8 h-8 rounded-full" />
-              <span className="font-medium">{o.name}</span>
-            </div>
-          </td>
-
-          <td className="px-3 py-4 truncate text-gray-600">
-            {o.address}
-          </td>
-
-          <td className="px-3 py-4">
-            {o.date.split("-").reverse().join("-")}
-          </td>
-
-          <td className="px-3 py-4 font-medium">{o.price}</td>
-
-          <td className="px-3 py-4">
-            <span
-              className={`px-3 py-1 rounded-full text-xs ${statusStyle[o.status]}`}
-            >
-              {o.status}
-            </span>
-          </td>
-
-          <td className="px-3 py-4 text-center relative">
-            <button
-              onClick={() => setOpenMenu(o.id)}
-              className="p-2 border rounded-lg"
-            >
-              <FiMoreVertical />
-            </button>
-
-            {openMenu === o.id && (
-              <div
-                ref={menuRef}
-                className="absolute right-0 bottom-full mb-2 w-44 bg-white border rounded-lg shadow-lg z-20"
-              >
-                <ActionItem icon={<FiEye />} text="View details" />
-                <ActionItem icon={<FiEdit />} text="Edit order" />
-                <ActionItem icon={<FiDownload />} text="Download invoice" />
-                <ActionItem icon={<FiX />} text="Cancel order" danger />
+                  {openMenu === order.id && (
+                    <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-lg shadow-md z-50">
+                      <button
+                        onClick={() => updateStatus(order.id, "Complete")}
+                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
+                      >
+                        Complete
+                      </button>
+                      <button
+                        onClick={() => updateStatus(order.id, "Pending")}
+                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
+                      >
+                        Pending
+                      </button>
+                      <button
+                        onClick={() => updateStatus(order.id, "Cancel")}
+                        className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-50"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
 
+              <div className="mt-5 space-y-2 text-gray-600 text-base">
+                <p className="truncate">{order.address}</p>
+                <p>{order.date}</p>
+                <p className="font-semibold text-gray-900">{order.price}</p>
+              </div>
 
-      {/* PAGINATION */}
-      <div className="flex justify-between mt-6 text-sm text-gray-500">
-        <p>Showing {paginatedOrders.length} orders</p>
-
-        <div className="flex gap-2">
-          <button
-            className="px-3 py-1 border rounded-md"
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage((p) => p - 1)}
-          >
-            Previous
-          </button>
-
-          {[...Array(totalPages)].map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrentPage(i + 1)}
-              className={`px-3 py-1 rounded-md ${
-                currentPage === i + 1
-                  ? "bg-black text-white"
-                  : "border"
-              }`}
-            >
-              {i + 1}
-            </button>
+              <div className="mt-5">
+                <span
+                  className={`px-4 py-1.5 text-sm rounded-full font-medium ${statusStyle(
+                    order.status
+                  )}`}
+                >
+                  {order.status}
+                </span>
+              </div>
+            </div>
           ))}
-
-          <button
-            className="px-3 py-1 border rounded-md"
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage((p) => p + 1)}
-          >
-            Next
-          </button>
         </div>
-      </div>
-    </section>
-  );
-}
 
-/* ACTION ITEM */
-function ActionItem({ icon, text, danger }) {
-  return (
-    <div
-      className={`flex items-center gap-2 px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 ${
-        danger ? "text-red-500" : ""
-      }`}
-    >
-      {icon}
-      {text}
+        {/* ================= DESKTOP TABLE ================= */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="min-w-[900px] w-full text-sm border-separate border-spacing-y-3">
+            <thead>
+              <tr className="bg-gray-100 text-gray-500">
+                <th className="px-6 py-3 text-left font-medium rounded-l-xl">Id</th>
+                <th className="px-6 py-3 text-left font-medium">Name</th>
+                <th className="px-6 py-3 text-left font-medium">Address</th>
+                <th className="px-6 py-3 text-left font-medium">Date</th>
+                <th className="px-6 py-3 text-left font-medium">Price</th>
+                <th className="px-6 py-3 text-left font-medium">Status</th>
+                <th className="px-6 py-3 text-center font-medium rounded-r-xl">Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {paginatedOrders.map((order) => (
+                <tr key={order.id} className="bg-white shadow-sm">
+                  <td className="px-6 py-4 font-medium">{order.id}</td>
+
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={order.img}
+                        alt={order.name}
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <span>{order.name}</span>
+                    </div>
+                  </td>
+
+                  <td className="px-6 py-4 max-w-[220px] truncate">
+                    {order.address}
+                  </td>
+
+                  <td className="px-6 py-4">{order.date}</td>
+                  <td className="px-6 py-4 font-medium">{order.price}</td>
+
+                  <td className="px-6 py-4">
+                    <span
+                      className={`px-3 py-1 text-xs rounded-full font-medium ${statusStyle(
+                        order.status
+                      )}`}
+                    >
+                      {order.status}
+                    </span>
+                  </td>
+
+                  <td className="px-6 py-4 text-center relative">
+                    <button
+                      onClick={() =>
+                        setOpenMenu(openMenu === order.id ? null : order.id)
+                      }
+                    >
+                      <MoreVertical size={18} />
+                    </button>
+
+                    {openMenu === order.id && (
+                      <div className="absolute right-6 top-12 w-32 bg-white border border-gray-200 rounded-lg shadow-md z-50">
+                        <button
+                          onClick={() => updateStatus(order.id, "Complete")}
+                          className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
+                        >
+                          Complete
+                        </button>
+                        <button
+                          onClick={() => updateStatus(order.id, "Pending")}
+                          className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
+                        >
+                          Pending
+                        </button>
+                        <button
+                          onClick={() => updateStatus(order.id, "Cancel")}
+                          className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-50"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* ================= PAGINATION ================= */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+          <p className="text-sm text-gray-500">
+            Showing {(currentPage - 1) * ordersPerPage + 1} to{" "}
+            {Math.min(currentPage * ordersPerPage, orders.length)} of{" "}
+            {orders.length}
+          </p>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() =>
+                setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
+              }
+              className="px-3 py-1.5 border rounded-lg text-sm disabled:opacity-40"
+              disabled={currentPage === 1}
+            >
+              Prev
+            </button>
+
+            {[...Array(totalPages)].map((_, index) => {
+              const page = index + 1;
+              return (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`w-8 h-8 rounded-lg text-sm ${
+                    currentPage === page
+                      ? "bg-black text-white"
+                      : "border"
+                  }`}
+                >
+                  {page}
+                </button>
+              );
+            })}
+
+            <button
+              onClick={() =>
+                setCurrentPage((prev) =>
+                  prev < totalPages ? prev + 1 : prev
+                )
+              }
+              className="px-3 py-1.5 border rounded-lg text-sm disabled:opacity-40"
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 }
