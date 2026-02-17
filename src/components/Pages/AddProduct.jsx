@@ -13,8 +13,8 @@ export default function AddGroceryItem() {
   };
 
   return (
-    <div className="p-10 bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto bg-white rounded-3xl shadow-lg p-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
+    <div className="">
+      <div className="max-w-8xl mx-auto bg-white rounded-3xl shadow-lg p-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
 
         {/* LEFT SIDE – IMAGE UPLOAD */}
         <div className="lg:col-span-1">

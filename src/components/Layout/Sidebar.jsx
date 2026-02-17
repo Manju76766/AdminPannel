@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -11,26 +12,15 @@ import {
   PlusCircle,
 } from "lucide-react";
 
-export default function Sidebar({
-  open,
-  setOpen,
-  activePage,
-  setActivePage,
-}) {
-  const [activeItem, setActiveItem] = useState(activePage);
-
-  useEffect(() => {
-    setActiveItem(activePage);
-  }, [activePage]);
-
+export default function Sidebar({ open, setOpen }) {
   const menuItems = [
-    { icon: LayoutDashboard, label: "Dashboard", page: "Dashboard" },
-    { icon: Users, label: "Users", page: "Users" },
-    { icon: ShoppingCart, label: "Products", page: "Items" },
-    { icon: Package, label: "Orders", page: "Orders" },
-{ icon: PlusCircle, label: "Add Product", page: "AddProduct" },
-    { icon: CreditCard, label: "Transactions", page: "Transactions" },
-    { icon: Settings, label: "Settings", page: "Setting" },
+    { icon: LayoutDashboard, label: "Dashboard", path: "/" },
+    { icon: Users, label: "Users", path: "/users" },
+    { icon: ShoppingCart, label: "Products", path: "/items" },
+    { icon: Package, label: "Orders", path: "/orders" },
+    { icon: PlusCircle, label: "Add Product", path: "/add-product" },
+    { icon: CreditCard, label: "Transactions", path: "/transactions" },
+    { icon: Settings, label: "Settings", path: "/settings" },
   ];
 
   return (
@@ -51,9 +41,6 @@ export default function Sidebar({
       >
         <SidebarContent
           open
-          activeItem={activeItem}
-          setActiveItem={setActiveItem}
-          setActivePage={setActivePage}
           setOpen={setOpen}
           menuItems={menuItems}
         />
@@ -69,9 +56,6 @@ export default function Sidebar({
       >
         <SidebarContent
           open={open}
-          activeItem={activeItem}
-          setActiveItem={setActiveItem}
-          setActivePage={setActivePage}
           setOpen={setOpen}
           menuItems={menuItems}
         />
@@ -80,14 +64,7 @@ export default function Sidebar({
   );
 }
 
-function SidebarContent({
-  open,
-  activeItem,
-  setActiveItem,
-  setActivePage,
-  setOpen,
-  menuItems,
-}) {
+function SidebarContent({ open, setOpen, menuItems }) {
   return (
     <div className="flex flex-col h-full">
       {/* LOGO */}
@@ -112,22 +89,21 @@ function SidebarContent({
       {/* MENU */}
       <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
         {menuItems.map((item) => (
-          <div
+          <NavLink
             key={item.label}
-            onClick={() => {
-              setActiveItem(item.page);
-              setActivePage(item.page);
-              setOpen(false);
-            }}
-            className={`mt-4 flex items-center gap-4 px-3 py-2 rounded-xl cursor-pointer transition ${
-              activeItem === item.page
-                ? "bg-[#925EFF] text-white"
-                : "text-gray-600 hover:bg-indigo-50"
-            }`}
+            to={item.path}
+            onClick={() => setOpen(false)}
+            className={({ isActive }) =>
+              `mt-4 flex items-center gap-4 px-3 py-2 rounded-xl transition ${
+                isActive
+                  ? "bg-[#925EFF] text-white"
+                  : "text-gray-600 hover:bg-indigo-50"
+              }`
+            }
           >
             <item.icon size={20} />
             {open && <span className="flex-1">{item.label}</span>}
-          </div>
+          </NavLink>
         ))}
       </nav>
 

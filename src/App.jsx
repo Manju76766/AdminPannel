@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Routes, Route } from "react-router-dom";
 
 // Layout
 import Sidebar from "./components/Layout/Sidebar";
@@ -11,47 +12,38 @@ import OrdersPage from "./components/Pages/OrdersPage";
 import Setting from "./components/Pages/Setting";
 import Items from "./components/Pages/Items";
 import AllOrdersPage from "./components/Pages/AllOrdersPage";
-
 import AddProduct from "./components/Pages/AddProduct";
 
+function Dashboard() {
+  return (
+    <>
+      <Card />
+      <div className="mt-8">
+        <Table />
+      </div>
+    </>
+  );
+}
 
 export default function App() {
   const [open, setOpen] = useState(true);
-  const [activePage, setActivePage] = useState("Dashboard");
 
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
-      <Sidebar
-        open={open}
-        setOpen={setOpen}
-        activePage={activePage}
-        setActivePage={setActivePage}
-      />
+      <Sidebar open={open} setOpen={setOpen} />
 
       <div className="flex flex-col flex-1 min-w-0">
         <Header open={open} setOpen={setOpen} />
 
         <main className="flex-1 overflow-y-auto p-6 lg:p-8">
-
-          {activePage === "Dashboard" && (
-            <>
-              <Card />
-              <div className="mt-8">
-                <Table />
-              </div>
-            </>
-          )}
-
-          {activePage === "Users" && <OrdersPage />}
-
-          {activePage === "Orders" && <AllOrdersPage />}
-
-          {activePage === "Setting" && <Setting />}
-
-          {activePage === "Items" && <Items />}
-
-          {activePage === "AddProduct" && <AddProduct />}
-
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/users" element={<OrdersPage />} />
+            <Route path="/orders" element={<AllOrdersPage />} />
+            <Route path="/settings" element={<Setting />} />
+            <Route path="/items" element={<Items />} />
+            <Route path="/add-product" element={<AddProduct />} />
+          </Routes>
         </main>
       </div>
     </div>

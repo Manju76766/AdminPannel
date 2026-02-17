@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+
 import {
   MoreVertical,
   ChevronLeft,
@@ -175,19 +176,12 @@ export default function OrdersTable() {
  {/* Bottom View All Button */}
 <div className="flex justify-center mt-8 pb-8">
   <button
-    onClick={() => navigate("/orders")}
-    className="group relative px-10 py-3 rounded-2xl 
-               bg-gradient-to-r from-purple-600 to-indigo-500 
-               text-white font-semibold tracking-wide
-               shadow-lg hover:shadow-2xl
-               transition-all duration-300 ease-in-out
-               hover:-translate-y-1 hover:scale-105"
-  >
-    <span className="relative z-10">View All Orders</span>
+  onClick={() => navigate("/users")}
+  className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+>
+  View All Orders
+</button>
 
-    {/* Soft Glow Effect */}
-    <span className="absolute inset-0 rounded-2xl bg-white/10 opacity-0 group-hover:opacity-100 transition duration-300"></span>
-  </button>
 </div>
 
 
