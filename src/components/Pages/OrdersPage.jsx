@@ -1,8 +1,6 @@
 import { useState, useMemo } from "react";
 import { MoreVertical } from "lucide-react";
 
-
-// Images
 import Cust1 from "../../assets/Img/Cust1.avif";
 import Cust2 from "../../assets/Img/Cust2.webp";
 import Cust3 from "../../assets/Img/Cust3.webp";
@@ -14,11 +12,9 @@ import Cust8 from "../../assets/Img/Cust8.avif";
 import Cust9 from "../../assets/Img/Cust9.avif";
 import Cust10 from "../../assets/Img/Cust10.avif";
 
-
 export default function OrdersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [openMenu, setOpenMenu] = useState(null);
-
   const ordersPerPage = 7;
 
   const [orders, setOrders] = useState([
@@ -31,7 +27,7 @@ export default function OrdersPage() {
     { id: 89657, name: "Zainab Fatima", img: Cust7, address: "6391 Elgin St. Celina, Delaware 10299", date: "12-06-2023", price: "₹340", status: "Cancel" },
     { id: 99876, name: "Ayesha Khan", img: Cust8, address: "742 Evergreen Terrace, Springfield 62704", date: "28-06-2023", price: "₹390", status: "Pending" },
     { id: 12345, name: "Hanzalah", img: Cust9, address: "New Street 45, Chicago", date: "30-06-2023", price: "₹300", status: "Complete" },
-    { id: 56789, name: "Rizwan", img: Cust10, address: "Main Street 12, Texas", date: "01-07-2023", price: "₹410", status: "Pending" },
+    { id: 56789, name: "Rizwan", img: Cust10, address: "Main Street 12, Texas", date: "01-07-2023", price: "₹410", status: "Pending" }
   ]);
 
   const totalPages = Math.ceil(orders.length / ordersPerPage);
@@ -46,11 +42,11 @@ export default function OrdersPage() {
   const statusStyle = (status) => {
     switch (status) {
       case "Complete":
-        return "bg-green-100 text-green-600";
+        return "text-green-600";
       case "Pending":
-        return "bg-yellow-100 text-yellow-600";
+        return "text-yellow-500";
       case "Cancel":
-        return "bg-red-100 text-red-500";
+        return "text-red-600";
       default:
         return "";
     }
@@ -66,220 +62,121 @@ export default function OrdersPage() {
   };
 
   return (
-    <div className="w-full h-full">
-      <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 flex flex-col gap-6">
+    <div className="min-h-screen w-full bg-[#f4f6f9] px-6 py-0">
+      <div className="w-full max-w-[1450px] mx-auto">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-8 py-8">
 
-        {/* ================= MOBILE VIEW (MATCH REFERENCE) ================= */}
-        <div className="md:hidden space-y-5">
-          {paginatedOrders.map((order) => (
-            <div
-              key={order.id}
-              className="bg-white rounded-2xl shadow-md p-5 relative"
-            >
-              <div className="flex justify-between items-start">
-                <div className="flex items-center gap-4">
-                  <img
-                    src={order.img}
-                    alt={order.name}
-                    className="w-14 h-14 rounded-full object-cover"
-                  />
-                  <div>
-                    <p className="text-lg font-semibold leading-tight">
-                      {order.name}
-                    </p>
-                    <p className="text-sm text-gray-400">#{order.id}</p>
-                  </div>
-                </div>
-
-                <div className="relative">
-                  <button
-                    onClick={() =>
-                      setOpenMenu(openMenu === order.id ? null : order.id)
-                    }
-                  >
-                    <MoreVertical size={20} />
-                  </button>
-
-                  {openMenu === order.id && (
-                    <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-lg shadow-md z-50">
-                      <button
-                        onClick={() => updateStatus(order.id, "Complete")}
-                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
-                      >
-                        Complete
-                      </button>
-                      <button
-                        onClick={() => updateStatus(order.id, "Pending")}
-                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
-                      >
-                        Pending
-                      </button>
-                      <button
-                        onClick={() => updateStatus(order.id, "Cancel")}
-                        className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-50"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="mt-5 space-y-2 text-gray-600 text-base">
-                <p className="truncate">{order.address}</p>
-                <p>{order.date}</p>
-                <p className="font-semibold text-gray-900">{order.price}</p>
-              </div>
-
-              <div className="mt-5">
-                <span
-                  className={`px-4 py-1.5 text-sm rounded-full font-medium ${statusStyle(
-                    order.status
-                  )}`}
-                >
-                  {order.status}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* ================= DESKTOP TABLE ================= */}
-        <div className="hidden md:block overflow-x-auto">
-          <table className="min-w-[900px] w-full text-sm border-separate border-spacing-y-3">
-            <thead>
-              <tr className="bg-gray-100 text-gray-500">
-                <th className="px-6 py-3 text-left font-medium rounded-l-xl">Id</th>
-                <th className="px-6 py-3 text-left font-medium">Name</th>
-                <th className="px-6 py-3 text-left font-medium">Address</th>
-                <th className="px-6 py-3 text-left font-medium">Date</th>
-                <th className="px-6 py-3 text-left font-medium">Price</th>
-                <th className="px-6 py-3 text-left font-medium">Status</th>
-                <th className="px-6 py-3 text-center font-medium rounded-r-xl">Action</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {paginatedOrders.map((order) => (
-                <tr key={order.id} className="bg-white shadow-sm">
-                  <td className="px-6 py-4 font-medium">{order.id}</td>
-
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={order.img}
-                        alt={order.name}
-                        className="w-10 h-10 rounded-full object-cover"
-                      />
-                      <span>{order.name}</span>
-                    </div>
-                  </td>
-
-                  <td className="px-6 py-4 max-w-[220px] truncate">
-                    {order.address}
-                  </td>
-
-                  <td className="px-6 py-4">{order.date}</td>
-                  <td className="px-6 py-4 font-medium">{order.price}</td>
-
-                  <td className="px-6 py-4">
-                    <span
-                      className={`px-3 py-1 text-xs rounded-full font-medium ${statusStyle(
-                        order.status
-                      )}`}
-                    >
-                      {order.status}
-                    </span>
-                  </td>
-
-                  <td className="px-6 py-4 text-center relative">
-                    <button
-                      onClick={() =>
-                        setOpenMenu(openMenu === order.id ? null : order.id)
-                      }
-                    >
-                      <MoreVertical size={18} />
-                    </button>
-
-                    {openMenu === order.id && (
-                      <div className="absolute right-6 top-12 w-32 bg-white border border-gray-200 rounded-lg shadow-md z-50">
-                        <button
-                          onClick={() => updateStatus(order.id, "Complete")}
-                          className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
-                        >
-                          Complete
-                        </button>
-                        <button
-                          onClick={() => updateStatus(order.id, "Pending")}
-                          className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
-                        >
-                          Pending
-                        </button>
-                        <button
-                          onClick={() => updateStatus(order.id, "Cancel")}
-                          className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-50"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    )}
-                  </td>
+          <div className="w-full overflow-x-auto">
+            <table className="w-full min-w-[1100px] text-sm text-gray-700">
+              <thead>
+                <tr className="border-b border-gray-200 text-gray-500">
+                  <th className="text-left font-medium py-4 pr-6">Id</th>
+                  <th className="text-left font-medium py-4 pr-6">Name</th>
+                  <th className="text-left font-medium py-4 pr-6">Address</th>
+                  <th className="text-left font-medium py-4 pr-6">Date</th>
+                  <th className="text-left font-medium py-4 pr-6">Price</th>
+                  <th className="text-left font-medium py-4 pr-6">Status</th>
+                  <th className="py-4 text-right">Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
 
-        {/* ================= PAGINATION ================= */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
-          <p className="text-sm text-gray-500">
-            Showing {(currentPage - 1) * ordersPerPage + 1} to{" "}
-            {Math.min(currentPage * ordersPerPage, orders.length)} of{" "}
-            {orders.length}
-          </p>
+              <tbody>
+                {paginatedOrders.map((order) => (
+                  <tr key={order.id} className="border-b border-gray-100">
+                    <td className="py-5 pr-6 font-medium text-gray-900">
+                      #{order.id}
+                    </td>
 
-          <div className="flex items-center gap-2">
+                    <td className="py-5 pr-6">
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={order.img}
+                          alt={order.name}
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
+                        <span className="font-medium text-gray-900">
+                          {order.name}
+                        </span>
+                      </div>
+                    </td>
+
+                    <td className="py-5 pr-6 max-w-[280px] truncate">
+                      {order.address}
+                    </td>
+
+                    <td className="py-5 pr-6">{order.date}</td>
+                    <td className="py-5 pr-6 font-medium">{order.price}</td>
+
+                    <td className="py-5 pr-6">
+                      <span className={statusStyle(order.status)}>
+                        {order.status}
+                      </span>
+                    </td>
+
+                    <td className="py-5 text-right relative">
+                      <button
+                        onClick={() =>
+                          setOpenMenu(openMenu === order.id ? null : order.id)
+                        }
+                        className="text-gray-400 hover:text-gray-600"
+                      >
+                        <MoreVertical size={18} />
+                      </button>
+
+                      {openMenu === order.id && (
+                        <div className="absolute right-0 top-12 w-32 bg-white border border-gray-200 rounded-lg shadow-md z-50">
+                          <button
+                            onClick={() => updateStatus(order.id, "Complete")}
+                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
+                          >
+                            Complete
+                          </button>
+                          <button
+                            onClick={() => updateStatus(order.id, "Pending")}
+                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
+                          >
+                            Pending
+                          </button>
+                          <button
+                            onClick={() => updateStatus(order.id, "Cancel")}
+                            className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-50"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-8 flex justify-center gap-2">
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentPage(i + 1)}
+                className={`w-9 h-9 rounded-md text-sm flex items-center justify-center ${
+                  currentPage === i + 1
+                    ? "bg-[#4f46e5] text-white"
+                    : "text-gray-600 hover:bg-gray-100"
+                }`}
+              >
+                {i + 1}
+              </button>
+            ))}
             <button
               onClick={() =>
-                setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
+                currentPage < totalPages && setCurrentPage(currentPage + 1)
               }
-              className="px-3 py-1.5 border rounded-lg text-sm disabled:opacity-40"
-              disabled={currentPage === 1}
+              className="w-9 h-9 rounded-md border border-[#4f46e5] text-[#4f46e5] flex items-center justify-center"
             >
-              Prev
-            </button>
-
-            {[...Array(totalPages)].map((_, index) => {
-              const page = index + 1;
-              return (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`w-8 h-8 rounded-lg text-sm ${
-                    currentPage === page
-                      ? "bg-black text-white"
-                      : "border"
-                  }`}
-                >
-                  {page}
-                </button>
-              );
-            })}
-
-            <button
-              onClick={() =>
-                setCurrentPage((prev) =>
-                  prev < totalPages ? prev + 1 : prev
-                )
-              }
-              className="px-3 py-1.5 border rounded-lg text-sm disabled:opacity-40"
-              disabled={currentPage === totalPages}
-            >
-              Next
+              &gt;
             </button>
           </div>
-        </div>
 
+        </div>
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ import Setting from "./components/Pages/Setting";
 import Items from "./components/Pages/Items";
 import AllOrdersPage from "./components/Pages/AllOrdersPage";
 import AddProduct from "./components/Pages/AddProduct";
+import Transcation from "./components/Pages/Transcation";
 
 function Dashboard() {
   return (
@@ -43,6 +44,8 @@ export default function App() {
             <Route path="/settings" element={<Setting />} />
             <Route path="/items" element={<Items />} />
             <Route path="/add-product" element={<AddProduct />} />
+            <Route path="/transactions" element={<Transcation />} />
+
           </Routes>
         </main>
       </div>
